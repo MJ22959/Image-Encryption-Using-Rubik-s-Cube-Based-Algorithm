@@ -1,5 +1,6 @@
-from __future__ import division         # change the / operator to mean true division throughout the module.
+from __future__ import division
 from PIL import Image
+import time
 from random import randint
 from collections import deque
 import smtplib
@@ -9,7 +10,7 @@ def rubics_operation(image, k):
     j = 0
     while j < len(image):
         sum_pix = sum(image[j])
-        x = deque(image[j])                     #adding and removing elements from either end
+        x = deque(image[j])
         if sum_pix % 2 == 0:
             x.rotate(k)
         else:
@@ -52,8 +53,8 @@ def xor_operation(image, k):
     i += 1
 
     return image
-    
-def send_email(email, kr, kc, itr):
+
+def send_email(email, kr, kc, iterations):
     email_adderss = 'imgencryption@gmail.com'
     email_password = 'minor123'
 
@@ -65,40 +66,42 @@ def send_email(email, kr, kc, itr):
         smtp.login(email_adderss, email_password)
 
         subject = "Image Encryption"
-        body = 'Image encrypted successfully! kr = ', kr, ' kc = ', kc, 'Number of Iterations = ', itr
+        body = 'Image encrypted successfully! kr = ', kr, ' kc = ', kc, 'Number of Iterations = ', iterations
 
         msg = f'Subject: {subject}\n\n{body}'
 
-        smtp.sendmail(email_adderss, email, msg)    
+        smtp.sendmail(email_adderss, email, msg)
 
 
-def inputImg(file_name, itr, email):
+def inputImg(file_name, iterations, email):
     #file_name = input("enter the file name to be encrypt:\t")
+    #file_name = absFilePath
     im = Image.open(file_name)          #image details
     pixels = list(im.getdata())
     grey_image1 = list()
     for pix in pixels:
         grey_image1.append(int(pix[0]))
-    grey_image2 = list()
-    sp = 0
-    for rows in range(im.size[1]):
-        fp = sp + im.size[0]            #length or size of list
-        x = grey_image1[sp:fp]
-        sp = fp
-        grey_image2.append(x)
-
+        grey_image2 = list()
+        sp = 0
+        for rows in range(im.size[1]):
+            fp = sp + im.size[0]            #length or size of list
+            x = grey_image1[sp:fp]
+            sp = fp
+            grey_image2.append(x)
     #itr = int(input("enter the no of iterations :\t"))
+    itr = iterations
+
     kr = randint(1, 255)
-
+    #n_kr = -kr
     kc = randint(1, 255)
-
+    #n_kc = -kc
     print("random integers are " + str(kr) + " , " + str(kc))
 
-    #email = input("Enter email: ")
-    send_email(email, kr, kc, itr)
 
+    send_email(email, kr, kc, iterations)
 
     i = 0
+    initial_time = time.time()
 
     while i < itr:
         i += 1
@@ -118,24 +121,29 @@ def inputImg(file_name, itr, email):
         grey_image2 = xor_operation(grey_image2 , kc)
 
 
+        grey_image3 = list()
+        for row in grey_image2:
+            for pix in row:
+                grey_image3.append(pix)
 
+                grey_image4 = list()
 
-    grey_image3 = list()
-    for row in grey_image2:
-        for pix in row:
-            grey_image3.append(pix)
-
-    grey_image4 = list()
-
-    for pix in grey_image3:
-        x = (pix, pix, pix)
-        grey_image4.append(x)
-    # generating the output
+            for pix in grey_image3:
+                x = (pix, pix, pix)
+                grey_image4.append(x)
+# generating the output
 
     x, y = im.size
     im2 = Image.new("RGB", (x, y))
 
     im2.putdata(grey_image4)
+    #im2.save("C:\Users\Nirajan Karki\Documents\" + file_name)
     im2.save("enc_result/" + file_name)
 
-    print("encryption done")
+    print("encryption done in " + str(time.time() - initial_time) + " sec.")
+
+    result = "encryption is done successfully. \n kr vector: " + str(kr) + " kc vector : " + str(kc)
+
+    f = open("log.txt" , "w")
+    f.write(result)
+    f.close()

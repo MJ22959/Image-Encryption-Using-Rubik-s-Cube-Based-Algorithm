@@ -13,17 +13,23 @@ def choose_File():
 
 def performEncryption():
     filePath = entry1.get()
+    #print(filename)
     fileNameArr = filePath.split("/")
     file_name = fileNameArr[len(fileNameArr)-1]
     print(file_name)
+    absFilePath = os.path.abspath(file_name)
+    print(absFilePath)
 
     iterations_str = entry2.get()
     iterations = int(iterations_str)
     email = entry3.get()
 
-    encryption.inputImg(file_name, iterations, email)
-    database.insert(email, todayDate)
 
+    encryption.inputImg(file_name, iterations, email)
+
+    database.insert(email, todayDate)
+    #list1.delete(0,END)
+    #list1.insert(END,(email, todayDate)
 
 def view_history():
     list1.delete(0,END)
@@ -33,7 +39,6 @@ def view_history():
 def delete_command():
     database.delete()
 
-
 window = Tk()
 
 Frame1 = Frame(window)
@@ -42,8 +47,6 @@ Frame2 = Frame(window)
 Frame2.pack(side=TOP)
 Frame3 = Frame(window)
 Frame3.pack(side=TOP)
-Frame4 = Frame(window)
-Frame4.pack(side=TOP)
 
 label_1 = Label(Frame1, text ="Image to be Encrypted : ",width = 100)
 entry1 = Entry(Frame1,width =100)
@@ -64,7 +67,6 @@ button4 = Button(window, text="Delete History", command=delete_command)
 
 list1=Listbox(window, height=8,width=100)
 
-
 label_1.pack()
 entry1.pack()
 button1.pack()
@@ -75,9 +77,7 @@ entry2.pack(side=LEFT)
 label_3.pack(side=LEFT)
 entry3.pack(side=LEFT)
 
-
 button2.pack()
-
 button3.pack()
 
 list1.pack()

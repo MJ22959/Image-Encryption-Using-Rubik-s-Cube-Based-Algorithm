@@ -9,9 +9,12 @@ def choose_File():
 
 def performDecryption():
     filePath = entry1.get()
+    #print(filename)
     fileNameArr = filePath.split("/")
     file_name = fileNameArr[len(fileNameArr)-1]
     print(file_name)
+    absFilePath = os.path.abspath(file_name)
+    print(absFilePath)
 
     iterations = int(entry2.get())
     kr = int(entry3.get())

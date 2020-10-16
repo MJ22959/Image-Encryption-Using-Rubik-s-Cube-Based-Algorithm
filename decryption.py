@@ -1,5 +1,6 @@
 from __future__ import division
 from PIL import Image
+import time
 from random import randint
 from collections import deque
 
@@ -73,6 +74,7 @@ def imgDecrypt(file_name, iterations, kr, kc):
     #kr = int(input("kr : "))
     #kc = int(input("kc : "))
 
+    initial_time = time.time()
 
     while i < itr:
         i += 1
@@ -104,4 +106,6 @@ def imgDecrypt(file_name, iterations, kr, kc):
 
     im.putdata(grey_image4)
     im.save("dec_result/" + file_name)
-    print("decryption done")
+    print("done")
+
+    print("decryption done in " + str(time.time() - initial_time) + " sec.")
